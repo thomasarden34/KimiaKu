@@ -1,6 +1,6 @@
-const GEMINI_API_KEY = 'AQ.Ab8RN6LTnOM51AXZgTHDFJ3CbzM6zzv0mw3cGCffaS_mT-1mXw';
+const GEMINI_API_KEY = process.env.GCP_API_KEY;
 
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
 
 // Sistem prompt: jadikan Gemini sebagai asisten kimia Robot IMO
 const SYSTEM_PROMPT = `Kamu adalah IMO, robot asisten pembelajaran kimia SMA yang cerdas, ramah, dan antusias.
