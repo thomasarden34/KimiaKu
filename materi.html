@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materi – KimiaKu</title>
+  <link rel="stylesheet" href="styles_new.css">
+</head>
+<body>
+
+<div class="xp-toast" id="xpToast">⚡ +10 XP</div>
+
+<nav class="navbar">
+  <div class="container">
+    <a class="nav-brand" href="index_new.html">
+      <div class="brand-icon">⚗️</div>KimiaKu
+    </a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materi.html" class="active">Materi</a></li>
+      <li><a href="monitoring.html">Monitoring</a></li>
+      <li><a href="imo.html">Imo</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="xp-chip" id="xpChip"><span class="xp-icon">⚡</span><span id="xpDisplay">0 XP</span></div>
+      <button class="theme-btn" id="themeBtn">🌙</button>
+      <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</nav>
+
+<!-- TOPIC MODAL -->
+<div class="modal-overlay" id="topicModal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-tag" id="modalTag">Semester 1</div>
+    <h2 id="modalTitle">Stoikiometri</h2>
+    <p class="modal-desc" id="modalDesc"></p>
+    <div class="modal-content-body" id="modalBody"></div>
+    <div class="modal-actions">
+      <a class="btn btn-lime" id="modalExtLink" href="#" target="_blank" rel="noopener">📖 Buka Materi Lengkap</a>
+      <button class="btn btn-violet" id="modalQuizBtn">🎯 Kuis Topik Ini</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ MODAL -->
+<div class="modal-overlay" id="quizModal">
+  <div class="modal-box" style="max-width:600px">
+    <button class="modal-close" id="quizModalClose">✕</button>
+    <div class="modal-tag" id="qmTag">Kuis</div>
+    <h2 id="qmTitle" style="margin-bottom:20px">Stoikiometri</h2>
+    <div id="quizModalBody">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qmProgress" style="width:0%"></div></div>
+      <div class="quiz-meta"><span id="qmLabel">Soal 1</span><span id="qmScore">Skor: 0</span></div>
+      <p class="quiz-q" id="qmQ"></p>
+      <div class="quiz-options" id="qmOptions"></div>
+      <div class="quiz-feedback" id="qmFeedback"></div>
+      <button class="btn btn-lime btn-full" id="qmNext" style="display:none">Soal berikutnya →</button>
+    </div>
+    <div class="quiz-score-screen" id="qmScoreScreen">
+      <div class="score-ring">
+        <div class="score-num" id="qmFinalScore">0</div>
+        <div class="score-lbl" id="qmTotal">/ 5</div>
+      </div>
+      <h3 style="margin-bottom:8px" id="qmVerdict"></h3>
+      <p style="margin-bottom:20px">Kamu mendapat <strong id="qmXp" style="color:var(--lime)">0 XP</strong>!</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-lime" id="qmRestart">Ulangi</button>
+        <button class="btn btn-outline" id="qmClose2">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main class="container page">
+  <div class="page-header">
+    <h1>📚 Materi Kimia</h1>
+    <p style="color:var(--sub)">Pilih topik, baca ringkasan, lalu uji dengan kuis. Klik kartu untuk membuka.</p>
+  </div>
+
+  <!-- Semester Tabs -->
+  <div class="semester-tabs">
+    <button class="tab-btn active" data-tab="sem1">Semester 1</button>
+    <button class="tab-btn" data-tab="sem2">Semester 2</button>
+  </div>
+
+  <!-- Semester 1 -->
+  <div id="sem1" class="tab-panel">
+    <div class="topics-grid" id="topicsGrid1"></div>
+  </div>
+  <!-- Semester 2 -->
+  <div id="sem2" class="tab-panel" style="display:none">
+    <div class="topics-grid" id="topicsGrid2"></div>
+  </div>
+
+  <div style="margin-top:40px; display:flex; gap:12px; flex-wrap:wrap">
+    <a class="btn btn-outline" href="index_new.html">← Home</a>
+    <a class="btn btn-lime" href="monitoring_new.html">📊 Monitoring</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">© 2026 DesiAndriawati · KimiaKu v2.0</div>
+</footer>
+
+<script src="script_new.js"></script>
+</body>
+</html>

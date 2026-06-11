@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoring KimiaKu</title>
+  <link rel="stylesheet" href="styles_new.css">
+</head>
+<body>
+
+<div class="xp-toast" id="xpToast">⚡ +5 XP — Data tersimpan!</div>
+
+<nav class="navbar">
+  <div class="container">
+    <a class="nav-brand" href="index_new.html">
+      <div class="brand-icon">⚗️</div>KimiaKu
+    </a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="materi.html">Materi</a></li>
+      <li><a href="monitoring.html" class="active">Monitoring</a></li>
+      <li><a href="imo.html">Imo</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="xp-chip" id="xpChip"><span class="xp-icon">⚡</span><span id="xpDisplay">0 XP</span></div>
+      <button class="theme-btn" id="themeBtn">🌙</button>
+      <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</nav>
+
+<main class="container page">
+  <div class="page-header">
+    <h1>📊 Monitoring &amp; Olah Data</h1>
+    <p style="color:var(--sub)">Catat pH, suhu, dan warna sampel. Data tersimpan di browser dan bisa diekspor sebagai CSV.</p>
+  </div>
+
+  <!-- Stats Bar -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:14px; margin-bottom:28px;" id="statsBar">
+    <div class="feat-card" style="padding:16px 18px">
+      <div style="font-size:.78rem;color:var(--sub);margin-bottom:2px">Total Data</div>
+      <div style="font-size:1.6rem;font-weight:800;color:var(--lime)" id="statTotal">0</div>
+    </div>
+    <div class="feat-card" style="padding:16px 18px">
+      <div style="font-size:.78rem;color:var(--sub);margin-bottom:2px">Rata-rata pH</div>
+      <div style="font-size:1.6rem;font-weight:800;color:var(--cyan)" id="statAvgPH">–</div>
+    </div>
+    <div class="feat-card" style="padding:16px 18px">
+      <div style="font-size:.78rem;color:var(--sub);margin-bottom:2px">Rata-rata Suhu</div>
+      <div style="font-size:1.6rem;font-weight:800;color:var(--orange)" id="statAvgTemp">–</div>
+    </div>
+    <div class="feat-card" style="padding:16px 18px">
+      <div style="font-size:.78rem;color:var(--sub);margin-bottom:2px">pH Tertinggi</div>
+      <div style="font-size:1.6rem;font-weight:800;color:var(--violet-l)" id="statMaxPH">–</div>
+    </div>
+  </div>
+
+  <section id="monitor-app">
+    <div class="monitor-form" id="readingForm">
+      <div class="form-group">
+        <label>pH (0–14)</label>
+        <input type="number" id="phInput" min="0" max="14" step="0.01" placeholder="mis. 7.4">
+      </div>
+      <div class="form-group">
+        <label>Suhu (°C)</label>
+        <input type="number" id="tempInput" step="0.1" placeholder="mis. 25.0">
+      </div>
+      <div class="form-group">
+        <label>Warna Sampel</label>
+        <input type="color" id="colorInput" value="#22d3ee">
+      </div>
+      <div class="form-group">
+        <label>Catatan (opsional)</label>
+        <input type="text" id="noteInput" placeholder="mis. Sampel A">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-lime" id="addBtn">+ Tambah Data</button>
+        <button class="btn btn-outline" id="exportBtn">⬇ Ekspor CSV</button>
+        <button class="btn" style="color:var(--red);border-color:rgba(239,68,68,.3)" id="clearBtn">🗑 Hapus Semua</button>
+      </div>
+    </div>
+
+    <!-- Kalkulator Cepat -->
+    <div style="margin-bottom:28px">
+      <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:16px">🔢 Kalkulator Cepat</h3>
+      <div class="calc-tabs">
+        <button class="calc-tab active" data-panel="ph">Kalkulator pH</button>
+        <button class="calc-tab" data-panel="mol">Kalkulator Mol</button>
+        <button class="calc-tab" data-panel="stoi">Stoikiometri</button>
+      </div>
+
+      <div id="ph" class="calc-panel active">
+        <div class="calc-box">
+          <h3>Hitung pH dari [H⁺]</h3>
+          <div class="form-group">
+            <label>Konsentrasi H⁺ (mol/L) — contoh: 0.001</label>
+            <input type="number" id="calcHInput" step="any" placeholder="mis. 0.001">
+          </div>
+          <div class="form-group">
+            <label>Atau masukkan pH untuk cari [H⁺]</label>
+            <input type="number" id="calcPHInput" step="any" min="0" max="14" placeholder="mis. 3">
+          </div>
+          <button class="btn btn-lime" id="calcPHBtn">Hitung</button>
+          <div class="calc-result" id="calcPHResult">
+            <div class="result-label">Hasil</div>
+            <div class="result-value" id="calcPHVal">–</div>
+            <div class="result-detail" id="calcPHDetail"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="mol" class="calc-panel">
+        <div class="calc-box">
+          <h3>Kalkulator Mol</h3>
+          <div class="form-group">
+            <label>Massa zat (gram)</label>
+            <input type="number" id="massInput" step="any" placeholder="mis. 18">
+          </div>
+          <div class="form-group">
+            <label>Massa molar (g/mol)</label>
+            <input type="number" id="molarInput" step="any" placeholder="mis. 18 untuk H₂O">
+          </div>
+          <button class="btn btn-lime" id="calcMolBtn">Hitung Mol</button>
+          <div class="calc-result" id="calcMolResult">
+            <div class="result-label">Jumlah mol</div>
+            <div class="result-value" id="calcMolVal">–</div>
+            <div class="result-detail" id="calcMolDetail"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="stoi" class="calc-panel">
+        <div class="calc-box">
+          <h3>Pengenceran (M₁V₁ = M₂V₂)</h3>
+          <div class="form-group">
+            <label>M₁ — Molaritas awal (mol/L)</label>
+            <input type="number" id="m1Input" step="any" placeholder="mis. 2">
+          </div>
+          <div class="form-group">
+            <label>V₁ — Volume awal (mL)</label>
+            <input type="number" id="v1Input" step="any" placeholder="mis. 50">
+          </div>
+          <div class="form-group">
+            <label>V₂ — Volume akhir (mL)</label>
+            <input type="number" id="v2Input" step="any" placeholder="mis. 100">
+          </div>
+          <button class="btn btn-lime" id="calcStoiBtn">Hitung M₂</button>
+          <div class="calc-result" id="calcStoiResult">
+            <div class="result-label">M₂ (Molaritas akhir)</div>
+            <div class="result-value" id="calcStoiVal">–</div>
+            <div class="result-detail" id="calcStoiDetail"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="monitor-grid">
+      <div class="chart-wrap">
+        <h4>Grafik pH &amp; Suhu</h4>
+        <canvas id="chartCanvas" height="260"></canvas>
+        <div style="display:flex;gap:20px;margin-top:10px;font-size:.8rem;color:var(--sub)">
+          <span><span style="display:inline-block;width:14px;height:3px;background:#a3e635;border-radius:2px;vertical-align:middle;margin-right:5px"></span>pH</span>
+          <span><span style="display:inline-block;width:14px;height:3px;background:#22d3ee;border-radius:2px;vertical-align:middle;margin-right:5px"></span>Suhu (°C)</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <h4>Daftar Pembacaan</h4>
+        <div style="overflow-x:auto">
+          <table id="readingsTable" class="readings-table">
+            <thead>
+              <tr><th>#</th><th>Waktu</th><th>pH</th><th>Suhu</th><th>Warna</th><th>Catatan</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div id="emptyState" style="text-align:center;padding:32px;color:var(--sub);display:none">
+          <div style="font-size:2rem;margin-bottom:8px">🧪</div>
+          <p>Belum ada data. Tambahkan pembacaan pertama!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">© 2026 DesiAndriawati · KimiaKu v2.0</div>
+</footer>
+
+<script src="script_new.js"></script>
+</body>
+</html>

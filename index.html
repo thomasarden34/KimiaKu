@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KimiaKu – Belajar Kimia Seru</title>
+  <link rel="stylesheet" href="styles_new.css">
+  <meta name="theme-color" content="#0d0f1a">
+</head>
+<body>
+
+<!-- XP Toast -->
+<div class="xp-toast" id="xpToast">⚡ +10 XP — Kamu aktif belajar!</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <a class="nav-brand" href="index.html">
+      <div class="brand-icon">⚗️</div>
+      KimiaKu
+    </a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="materi.html">Materi</a></li>
+      <li><a href="monitoring.html">Monitoring</a></li>
+      <li><a href="imo.html">Imo</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="xp-chip" id="xpChip">
+        <span class="xp-icon">⚡</span>
+        <span id="xpDisplay">0 XP</span>
+      </div>
+      <button class="theme-btn" id="themeBtn" title="Toggle tema">🌙</button>
+      <div class="nav-toggle" id="navToggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg">
+    <canvas id="particleCanvas"></canvas>
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+  </div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-eyebrow">🧪 Kimia SMA Semester 1 &amp; 2</div>
+        <h1 class="hero-title">
+          Kimia itu<br>
+          <span class="hl">Seru &amp; Mudah</span><br>
+          Beneran.
+        </h1>
+        <p class="hero-desc">
+          Materi lengkap, kuis interaktif, kalkulator kimia, dan sistem XP — semua dalam satu tempat. Mulai belajar dan kumpulkan badge-mu!
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-lime" href="materi.html">🚀 Mulai Belajar</a>
+          <a class="btn btn-outline" href="monitoring.html">📊 Monitoring</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="val">10</div><div class="lbl">Topik Materi</div></div>
+          <div class="hero-stat"><div class="val">40+</div><div class="lbl">Soal Kuis</div></div>
+          <div class="hero-stat"><div class="val">3</div><div class="lbl">Kalkulator</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="molecule-wrap">
+          <div class="orbit"><div class="electron"></div></div>
+          <div class="orbit"><div class="electron"></div></div>
+          <div class="orbit"><div class="electron"></div></div>
+          <div class="molecule-core">H₂O</div>
+          <span class="atom-label" style="top:12px;right:8px">pH = 7</span>
+          <span class="atom-label" style="bottom:36px;left:0px">ΔH = −286 kJ</span>
+          <span class="atom-label" style="top:42%;right:-8px">Kc = 1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FEATURES -->
+<section class="section highlights-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Kenapa KimiaKu?</h2>
+      <p>Dirancang supaya kamu <em>betah</em> belajar, bukan setengah mengerti.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card lime reveal">
+        <div class="feat-icon lime">📚</div>
+        <h3>Materi Ringkas</h3>
+        <p>Konsep kunci Semester 1 &amp; 2 disajikan padat, jelas, tanpa basa-basi.</p>
+      </div>
+      <div class="feat-card violet reveal">
+        <div class="feat-icon violet">🎯</div>
+        <h3>Kuis Interaktif</h3>
+        <p>Uji pemahaman tiap topik langsung. Jawab, lihat penjelasan, dan perbaiki.</p>
+      </div>
+      <div class="feat-card cyan reveal">
+        <div class="feat-icon cyan">🔢</div>
+        <h3>Kalkulator Kimia</h3>
+        <p>Hitung pH, mol, &amp; stoikiometri tanpa ribet. Cocok untuk latihan soal.</p>
+      </div>
+      <div class="feat-card orange reveal">
+        <div class="feat-icon orange">🏆</div>
+        <h3>Sistem XP &amp; Badge</h3>
+        <p>Setiap aktivitas memberi XP. Kumpulkan badge dan buktikan kemampuanmu!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK QUIZ TEASER -->
+<section class="section quiz-section" style="background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <h2>Coba Soal Singkat</h2>
+      <p>Pemanasan dulu sebelum masuk materi.</p>
+    </div>
+    <div class="quiz-container" id="homeQuiz">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="hqProgressFill" style="width:0%"></div></div>
+      <div class="quiz-meta">
+        <span id="hqLabel">Soal 1 / 5</span>
+        <span id="hqScore">Skor: 0</span>
+      </div>
+      <div id="hqBody">
+        <p class="quiz-q" id="hqQ"></p>
+        <div class="quiz-options" id="hqOptions"></div>
+        <div class="quiz-feedback" id="hqFeedback"></div>
+        <button class="btn btn-lime btn-full" id="hqNext" style="display:none">Soal berikutnya →</button>
+      </div>
+      <div class="quiz-score-screen" id="hqScore-screen">
+        <div class="score-ring">
+          <div class="score-num" id="hqFinalScore">0</div>
+          <div class="score-lbl">/ 5</div>
+        </div>
+        <h3 style="margin-bottom:8px" id="hqVerdict"></h3>
+        <p style="margin-bottom:20px">Kamu mendapat <strong id="hqXpEarned" style="color:var(--lime)">0 XP</strong> dari kuis ini!</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-lime" id="hqRestart">Ulangi Kuis</button>
+          <a class="btn btn-outline" href="materi.html">Pelajari Materi →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BADGES PREVIEW -->
+<section class="section badges-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Koleksi Badge</h2>
+      <p>Raih badge dengan menyelesaikan materi, kuis, dan monitoring.</p>
+    </div>
+    <div class="badges-grid" id="badgesGrid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="text-align:center; padding:60px 0;">
+  <div class="container">
+    <div class="hero-eyebrow" style="margin:0 auto 16px; width:fit-content">✨ Gratis &amp; Tanpa Login</div>
+    <h2 style="font-size:clamp(1.8rem,3vw,2.4rem); font-weight:900; letter-spacing:-.03em; margin-bottom:12px">Siap kuasai Kimia?</h2>
+    <p style="margin-bottom:28px">Semua fitur bisa langsung dipakai. Tidak perlu daftar.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-lime" href="materi.html">🚀 Mulai Sekarang</a>
+      <a class="btn btn-outline" href="monitoring.html">📊 Monitoring Data</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">© 2026 DesiAndriawati · KimiaKu v2.0 — <a href="materi.html">Materi</a> · <a href="monitoring.html">Monitoring</a> · <a href="imo.html">Imo</a> · <a href="mailto:thomasarden34@gmail.com">help</a></div>
+</footer>
+
+<script src="script_new.js"></script>
+</body>
+</html>
