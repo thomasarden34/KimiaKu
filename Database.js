@@ -327,3 +327,4 @@ fs.addEventListener('touchmove', (e) => {
 
 // Loop Kedipan Mata Otomatis
 setInterval(() => { if (!isSpeaking && curMood !== 'wink') doBlink(); }, 3000 + Math.random() * 2000);
+window.setMood = setMood;
