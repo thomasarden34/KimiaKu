@@ -38,6 +38,56 @@
     @keyframes scanA{from{transform:translateY(-260px)}to{transform:translateY(260px)}}
     @keyframes speakJaw{0%,100%{d:path("M 62 182 Q 100 194 138 182")}50%{d:path("M 62 182 Q 100 206 138 182")}}
     @keyframes speakJaw2{0%,100%{d:path("M 62 182 Q 100 194 138 182")}33%{d:path("M 62 182 Q 100 210 138 182")}66%{d:path("M 62 188 Q 100 198 138 188")}}
+
+    .mic-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    width: min(280px, 85vw);
+}
+
+#micBtn {
+    background: transparent;
+    border: 1.5px solid rgba(34, 197, 94, 0.5);
+    color: #22c55e;
+    font-family: monospace;
+    font-size: clamp(11px, 2.5vw, 13px);
+    padding: 9px 24px;
+    border-radius: 24px;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+#micBtn:hover {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: #22c55e;
+}
+
+/* Animasi saat mic aktif (mendengarkan) */
+#micBtn.mic-active {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: #ef4444;
+    color: #ef4444;
+    animation: micPulse 1s infinite;
+}
+
+@keyframes micPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+    50%       { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
+/* Teks status di bawah tombol */
+#micStatus {
+    color: rgba(34, 197, 94, 0.45);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-align: center;
+    min-height: 14px;
+}
   </style>
 </head>
 <body>
@@ -178,7 +228,15 @@
     <div class="hint">Tap wajah untuk berkedip • Gerak kursor untuk pupil ikut</div>
   </div>
 
+<div class="mic-area">
+    <button id="micBtn" title="Klik dan tanya soal kimia">
+        🎤 Tanya IMO
+    </button>
+    <span id="micStatus">Siap mendengarkan pertanyaan kimia kamu</span>
+</div>
+
   <script type="module" src="Database.js"></script>
+  <script src="AIHandler.js"></script>
   <script src="script_new.js"></script>
 </body>
 </html>
