@@ -130,8 +130,8 @@ function speakText(text) {
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'id-ID'; // Menggunakan aksen bahasa Indonesia
-    utterance.pitch = 1;    // Nada suara sedikit futuristik
-    utterance.rate = 0.9;     // Kecepatan bicara normal
+    utterance.pitch = 1.1;    // Nada suara sedikit futuristik
+    utterance.rate = 1;     // Kecepatan bicara normal
 
     utterance.onend = () => {
       stopSpeaking(); // Hentikan animasi saat suara selesai
