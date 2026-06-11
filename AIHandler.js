@@ -1,26 +1,19 @@
-// =============================================================
-//  AIHandler.js — Speech-to-Text + Claude LLM untuk Robot IMO
-//  Alur: Mic → Web Speech API → Claude API → setMood() + bicara
-// =============================================================
+const GEMINI_API_KEY = 'AQ.Ab8RN6LTnOM51AXZgTHDFJ3CbzM6zzv0mw3cGCffaS_mT-1mXw';
 
-// ⚠️  GANTI dengan API key Claude kamu dari console.anthropic.com
-const ANTHROPIC_API_KEY = 'sk-ant-XXXXXXXXXXXXXXXXXXXXXXXXXX';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-// Sistem prompt: jadikan Claude sebagai asisten kimia Robot IMO
+// Sistem prompt: jadikan Gemini sebagai asisten kimia Robot IMO
 const SYSTEM_PROMPT = `Kamu adalah IMO, robot asisten pembelajaran kimia SMA yang cerdas, ramah, dan antusias.
 Kamu membantu siswa memahami pelajaran kimia dengan bahasa yang mudah dimengerti.
 
 ATURAN MENJAWAB:
 - Jawab selalu dalam Bahasa Indonesia yang santun dan semangat
-- Maksimal 2-3 kalimat saja agar mudah diucapkan
+- Maksimal 2-3 kalimat saja agar mudah diucapkan robot
 - Gunakan analogi sederhana jika perlu
 - Jika pertanyaan di luar kimia, arahkan kembali ke pelajaran kimia dengan ramah
 
-FORMAT RESPONS (wajib JSON):
-{
-  "mood": "happy|sad|angry|surprised|normal|wink",
-  "text": "teks jawaban di sini"
-}
+FORMAT RESPONS (wajib JSON, tanpa teks lain, tanpa backtick):
+{"mood":"happy","text":"teks jawaban di sini"}
 
 PANDUAN MOOD:
 - happy    → jawaban benar, pujian, semangat belajar
@@ -32,7 +25,7 @@ PANDUAN MOOD:
 
 Contoh:
 Pertanyaan: "Apa itu ikatan ion?"
-Respons: {"mood":"normal","text":"Ikatan ion terbentuk saat atom logam melepas elektron ke atom nonlogam, menciptakan gaya tarik antara ion positif dan negatif. Contohnya adalah garam dapur, NaCl!"}`;
+Respons: {"mood":"normal","text":"Ikatan ion terbentuk saat atom logam melepas elektron ke atom nonlogam, menciptakan gaya tarik antara ion positif dan negatif. Contohnya adalah garam dapur NaCl!"}`;
 
 // -------------------------------------------------------------
 //  1. Inisialisasi Web Speech Recognition
@@ -49,7 +42,7 @@ function initSpeechRecognition() {
         if (micBtn) {
             micBtn.disabled = true;
             micBtn.title = 'Browser tidak mendukung mikrofon';
-            micBtn.textContent = '🚫';
+            micBtn.textContent = '🚫 Mic tidak tersedia';
         }
         return;
     }
@@ -59,18 +52,18 @@ function initSpeechRecognition() {
     recognition.continuous = false;     // Berhenti setelah 1 kalimat
     recognition.interimResults = false; // Hanya hasil final
 
-    // Saat hasil suara diterima → kirim ke Claude
+    // Saat hasil suara diterima → kirim ke Gemini
     recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript.trim();
         console.log('STT Hasil:', transcript);
         updateMicStatus(`"${transcript}"`);
-        askClaude(transcript);
+        askGemini(transcript);
     };
 
     recognition.onstart = () => {
         isListening = true;
         setMicUI(true);
-        updateMicStatus('Mendengarkan...');
+        updateMicStatus('🎙️ Mendengarkan...');
     };
 
     recognition.onend = () => {
@@ -82,9 +75,10 @@ function initSpeechRecognition() {
         isListening = false;
         setMicUI(false);
         const pesanError = {
-            'not-allowed'  : 'Izin mikrofon ditolak. Izinkan akses mic di browser.',
-            'no-speech'    : 'Tidak ada suara terdeteksi. Coba lagi.',
-            'network'      : 'Masalah jaringan. Periksa koneksi internet.',
+            'not-allowed' : '❌ Izin mikrofon ditolak. Klik ikon kunci di address bar → izinkan mic.',
+            'no-speech'   : '⚠️ Tidak ada suara. Coba bicara lebih keras.',
+            'network'     : '❌ Masalah jaringan. Periksa koneksi internet.',
+            'aborted'     : 'Dibatalkan.',
         };
         updateMicStatus(pesanError[e.error] || `Error: ${e.error}`);
         console.error('STT Error:', e.error);
@@ -110,9 +104,9 @@ function toggleMic() {
 }
 
 // -------------------------------------------------------------
-//  3. Kirim Teks ke Claude API → Proses Respons JSON
+//  3. Kirim Teks ke Gemini API → Proses Respons JSON
 // -------------------------------------------------------------
-async function askClaude(userText) {
+async function askGemini(userText) {
     updateMicStatus('⏳ IMO sedang berpikir...');
 
     // Tampilkan teks user di speech bubble sementara
@@ -120,65 +114,70 @@ async function askClaude(userText) {
     if (sb) sb.textContent = `Kamu: "${userText}"`;
 
     try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch(GEMINI_URL, {
             method: 'POST',
             headers: {
-                'Content-Type'      : 'application/json',
-                'x-api-key'         : ANTHROPIC_API_KEY,
-                'anthropic-version' : '2023-06-01',
-                // CORS proxy diperlukan jika dijalankan lokal (tanpa server)
-                // Jika deploy ke server, hapus header ini
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                model      : 'claude-sonnet-4-20250514',
-                max_tokens : 300,
-                system     : SYSTEM_PROMPT,
-                messages   : [
-                    { role: 'user', content: userText }
-                ]
+                system_instruction: {
+                    parts: [{ text: SYSTEM_PROMPT }]
+                },
+                contents: [
+                    {
+                        role: 'user',
+                        parts: [{ text: userText }]
+                    }
+                ],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 300,
+                }
             })
         });
 
         if (!response.ok) {
             const errData = await response.json();
-            throw new Error(errData?.error?.message || `HTTP ${response.status}`);
+            const errMsg = errData?.error?.message || `HTTP ${response.status}`;
+            throw new Error(errMsg);
         }
 
         const data = await response.json();
-        const rawText = data.content?.[0]?.text || '';
 
-        // Parse JSON dari respons Claude
+        // Ambil teks dari respons Gemini
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        console.log('Gemini Raw:', rawText);
+
+        // Parse JSON dari respons
         let parsed;
         try {
-            // Bersihkan fence ```json jika ada
+            // Bersihkan fence ```json jika Gemini menambahkannya
             const cleaned = rawText.replace(/```json|```/g, '').trim();
             parsed = JSON.parse(cleaned);
         } catch {
-            // Fallback: jika bukan JSON, pakai teks mentah dengan mood normal
+            // Fallback jika bukan JSON bersih
             parsed = { mood: 'normal', text: rawText };
         }
 
         const mood = parsed.mood || 'normal';
         const text = parsed.text || 'Maaf, aku tidak mengerti pertanyaanmu.';
 
-        console.log('Claude Respons:', { mood, text });
+        console.log('Gemini Respons:', { mood, text });
         updateMicStatus('✅ Siap');
 
         // Perintahkan Robot IMO bereaksi!
-        // Fungsi setMood() ada di Database.js (sudah ter-import di imo.html)
-        if (typeof setMood === 'function') {
-            setMood(mood, null, text);
+        if (typeof window.setMood === 'function') {
+            window.setMood(mood, null, text);
         } else {
-            console.warn('setMood() tidak ditemukan. Pastikan Database.js dimuat sebelum AIHandler.js');
+            console.warn('setMood() tidak ditemukan. Pastikan window.setMood = setMood ada di Database.js');
         }
 
     } catch (err) {
-        console.error('Claude API Error:', err);
-        updateMicStatus(`❌ Error: ${err.message}`);
+        console.error('Gemini API Error:', err);
+        updateMicStatus(`❌ ${err.message}`);
 
-        // Robot menunjukkan ekspresi sad jika ada error
-        if (typeof setMood === 'function') {
-            setMood('sad', null, 'Maaf, koneksi ke AI sedang bermasalah. Coba lagi sebentar ya!');
+        if (typeof window.setMood === 'function') {
+            window.setMood('sad', null, 'Maaf, koneksi ke AI sedang bermasalah. Coba lagi sebentar ya!');
         }
     }
 }
