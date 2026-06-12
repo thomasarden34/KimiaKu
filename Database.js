@@ -85,6 +85,8 @@ let curMood = 'normal';
 let isSpeaking = false;
 let speakAnimJaw = null;
 let speakAnimBars = null;
+let isFirstLoadEkspresi = true;
+let isFirstLoadMateri = true;
 
 // 4. Konfigurasi Mood, Ekspresi, dan Frasa Edukasi Kimia
 const moods = {
