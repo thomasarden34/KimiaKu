@@ -84,7 +84,7 @@ async function askGemini(userText) {
 
     try {
         // GANTI URL DI BAWAH INI SESUAI NAMA WORKER BARU KAMU TANPA GIT!
-        const response = await fetch('https://NAMA-WORKER-BARU-KAMU.thomasarden34.workers.dev', {
+        const response = await fetch('https://aged-moon-5cc2.thomasarden34.workers.dev/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
