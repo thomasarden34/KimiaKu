@@ -97,6 +97,9 @@ async function askGemini(userText) {
         }
 
         const data = await response.json();
+
+        if (data.error) {throw new Error(`Google API: ${data.error.message}`);}
+        
         const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
         console.log('Gemini Raw:', rawText);
 
