@@ -97,9 +97,6 @@ async function askGemini(userText) {
         }
 
         const data = await response.json();
-
-        alert("Respon Server: " + JSON.stringify(data));
-        
         const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
         console.log('Gemini Raw:', rawText);
 
